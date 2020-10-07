@@ -1,101 +1,101 @@
 parameters:
-- name: deploymentBranch
-  displayName: Branch to Deploy
-  type: string
-  default: refs/heads/master
+  - name: deploymentBranch
+    displayName: Branch to Deploy
+    type: string
+    default: refs/heads/master
 
-- name: environment
-  displayName: Environment
-  type: string
-  default: AAT
-  values:
-  - Preview
-  - Dev
-  - AAT
-  - Sandbox
-  - Test1
-  - Test2
-  - Demo
-  - Preprod
-  - Prod
+  - name: environment
+    displayName: Environment
+    type: string
+    default: AAT
+    values:
+      - Preview
+      - Dev
+      - AAT
+      - Sandbox
+      - Test1
+      - Test2
+      - Demo
+      - Preprod
+      - Prod
 
-- name: deviceConfiguration
-  displayName: Device Configurations
-  type: object
-  default:
-    - OS: Windows
-      Browser: Chrome
-      BrowserVersion: Latest
-      DeviceType: Desktop
-      DeviceName:
-      TestCaseFilter: TestCategory!=UnsupportedBrowser
-    - OS: Windows
-      Browser: Firefox
-      BrowserVersion: Latest
-      DeviceType: Desktop
-      DeviceName:
-      TestCaseFilter: TestCategory=UnsupportedBrowser
-    - OS: Windows
-      Browser: EdgeChromium
-      BrowserVersion: Latest
-      DeviceType: Desktop
-      DeviceName:
-      TestCaseFilter: TestCategory=UnsupportedBrowser
-    - OS: MacOS
-      Browser: Safari
-      BrowserVersion: Latest
-      DeviceType: Desktop
-      DeviceName:
-      TestCaseFilter: TestCategory=UnsupportedBrowser
-    - OS: MacOS
-      Browser: Chrome
-      BrowserVersion: Latest
-      DeviceType: Desktop
-      DeviceName:
-      TestCaseFilter: TestCategory=Smoketest-Extended
-    - OS: MacOS
-      Browser: Firefox
-      BrowserVersion: Latest
-      DeviceType: Desktop
-      DeviceName:
-      TestCaseFilter: TestCategory=UnsupportedBrowser
-    - OS: Windows
-      Browser: Ie11
-      BrowserVersion: Latest
-      DeviceType: Desktop
-      DeviceName:
-      TestCaseFilter: TestCategory=UnsupportedBrowser
-    - OS: iOS
-      Browser: Safari
-      BrowserVersion:
-      DeviceType: Tablet
-      DeviceName:
-      TestCaseFilter: TestCategory=UnsupportedDevice
-    - OS: Android
-      Browser: Chrome
-      BrowserVersion:
-      DeviceType: Tablet
-      DeviceName:
-      TestCaseFilter: TestCategory=UnsupportedDevice
-    - OS: iOS
-      Browser: Safari
-      BrowserVersion:
-      DeviceType: Mobile
-      DeviceName:
-      TestCaseFilter: TestCategory=UnsupportedDevice
-    - OS: Android
-      Browser: Chrome
-      BrowserVersion:
-      DeviceType: Mobile
-      DeviceName:
-      TestCaseFilter: TestCategory=UnsupportedDevice
+  - name: deviceConfiguration
+    displayName: Device Configurations
+    type: object
+    default:
+      - OS: Windows
+        Browser: Chrome
+        BrowserVersion: Latest
+        DeviceType: Desktop
+        DeviceName:
+        TestCaseFilter: TestCategory!=UnsupportedBrowser
+      - OS: Windows
+        Browser: Firefox
+        BrowserVersion: Latest
+        DeviceType: Desktop
+        DeviceName:
+        TestCaseFilter: TestCategory=UnsupportedBrowser
+      - OS: Windows
+        Browser: EdgeChromium
+        BrowserVersion: Latest
+        DeviceType: Desktop
+        DeviceName:
+        TestCaseFilter: TestCategory=UnsupportedBrowser
+      - OS: MacOS
+        Browser: Safari
+        BrowserVersion: Latest
+        DeviceType: Desktop
+        DeviceName:
+        TestCaseFilter: TestCategory=UnsupportedBrowser
+      - OS: MacOS
+        Browser: Chrome
+        BrowserVersion: Latest
+        DeviceType: Desktop
+        DeviceName:
+        TestCaseFilter: TestCategory=Smoketest-Extended
+      - OS: MacOS
+        Browser: Firefox
+        BrowserVersion: Latest
+        DeviceType: Desktop
+        DeviceName:
+        TestCaseFilter: TestCategory=UnsupportedBrowser
+      - OS: Windows
+        Browser: Ie11
+        BrowserVersion: Latest
+        DeviceType: Desktop
+        DeviceName:
+        TestCaseFilter: TestCategory=UnsupportedBrowser
+      - OS: iOS
+        Browser: Safari
+        BrowserVersion:
+        DeviceType: Tablet
+        DeviceName:
+        TestCaseFilter: TestCategory=UnsupportedDevice
+      - OS: Android
+        Browser: Chrome
+        BrowserVersion:
+        DeviceType: Tablet
+        DeviceName:
+        TestCaseFilter: TestCategory=UnsupportedDevice
+      - OS: iOS
+        Browser: Safari
+        BrowserVersion:
+        DeviceType: Mobile
+        DeviceName:
+        TestCaseFilter: TestCategory=UnsupportedDevice
+      - OS: Android
+        Browser: Chrome
+        BrowserVersion:
+        DeviceType: Mobile
+        DeviceName:
+        TestCaseFilter: TestCategory=UnsupportedDevice
 
-- name: prodEnvs
-  displayName: Environments Using Prod Subscription
-  type: object
-  default:
-    - Prod
-    - Preprod
+  - name: prodEnvs
+    displayName: Environments Using Prod Subscription
+    type: object
+    default:
+      - Prod
+      - Preprod
 
 # Set variables once
 variables:
@@ -105,19 +105,19 @@ variables:
   - group: vh test users
   - group: Saucelabs
   - ${{ if containsValue(parameters.prodEnvs, parameters.environment) }}:
-    - group: vh-prod
+      - group: vh-prod
   - ${{ if not(containsValue(parameters.prodEnvs, parameters.environment)) }}:
-    - group: vh-preview
+      - group: vh-preview
 
 trigger: none
 pr: none
 schedules:
-- cron: "0 19 * * *"
-  displayName: Daily midnight build
-  always: true
-  branches:
-    include:
-    - master
+  - cron: "0 19 * * *"
+    displayName: Daily midnight build
+    always: true
+    branches:
+      include:
+        - master
 
 resources:
   repositories:
@@ -125,10 +125,10 @@ resources:
       type: github
       name: hmcts/azure-devops-templates
       ref: refs/heads/master
-      endpoint: hmcts (1)
+      endpoint: hmcts_shaed
   pipelines:
-  - pipeline: CI
-    source: hmcts.vh-admin-web
+    - pipeline: CI
+      source: hmcts.vh-admin-web
 
 stages:
   - template: templates/vh-release.yml@templates
@@ -145,36 +145,36 @@ stages:
         resourceGroup: vh-admin-web-$(environment)
         testCaseFilter: TestCategory=smoketest
         dependentApps:
-        - name: vh-user-api-$(environment)
-          resourceGroup: vh-user-api-$(environment)
-          healthEndpoint: $(user_api_url)healthcheck/health
-        - name: vh-bookings-api-$(environment)
-          resourceGroup: vh-bookings-api-$(environment)
-          healthEndpoint: $(bookings_api_url)healthcheck/health
-        - name: vh-video-api-$(environment)
-          resourceGroup: vh-video-api-$(environment)
-          healthEndpoint: $(video_api_url)healthcheck/health
-        - name: vh-test-api-$(environment)
-          resourceGroup: vh-test-api-$(environment)
-          healthEndpoint: $(test_api_url)health/health
+          - name: vh-user-api-$(environment)
+            resourceGroup: vh-user-api-$(environment)
+            healthEndpoint: $(user_api_url)healthcheck/health
+          - name: vh-bookings-api-$(environment)
+            resourceGroup: vh-bookings-api-$(environment)
+            healthEndpoint: $(bookings_api_url)healthcheck/health
+          - name: vh-video-api-$(environment)
+            resourceGroup: vh-video-api-$(environment)
+            healthEndpoint: $(video_api_url)healthcheck/health
+          - name: vh-test-api-$(environment)
+            resourceGroup: vh-test-api-$(environment)
+            healthEndpoint: $(test_api_url)health/health
         variables:
           - group: vh-wowza-dev
             env:
-             - Preview
-             - Dev
-             - AAT
-             - Sandbox
-             - Test1
-             - Test2
+              - Preview
+              - Dev
+              - AAT
+              - Sandbox
+              - Test1
+              - Test2
           - group: vh-wowza-demo
             env:
-             - Demo
+              - Demo
           - group: vh-wowza-preprod
             env:
-             - Preprod
+              - Preprod
           - group: vh-wowza-prod
             env:
-             - Prod
+              - Prod
         appSettings:
           - name: ApplicationInsights:InstrumentationKey
             value: vh-core-infra-AppInsightsKey
@@ -209,7 +209,7 @@ stages:
             secret: true
           - name: AzureAd:Authority
             value: $(Authority)
-            
+
           # Testing
           - name: TestUserSecrets:TestUsernameStem
             value: $(TestUserSecrets:TestUsernameStem)
@@ -255,7 +255,7 @@ stages:
             value: $(test_api_url)
           - name: VhServices:TestApiResourceId
             value: vh-test-api-identifieruris
-            secret: true 
+            secret: true
           - name: VhServices:BookingsApiUrl
             value: $(bookings_api_url)
           - name: VhServices:BookingsApiResourceId
